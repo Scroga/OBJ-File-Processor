@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OBJProcessor": {
+      "commandName": "Project",
+      "commandLineArgs": "-i h"
+    }
+  }
+}
