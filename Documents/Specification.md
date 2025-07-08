@@ -3,7 +3,7 @@
 > OBJ Transformation and Optimization Tool
 
 This program is a command-line C# application designed to process 3D model stored in [.obj format](https://en.wikipedia.org/wiki/Wavefront_.obj_file#:~:text=The%20OBJ%20file%20format%20is,of%20vertices%2C%20and%20texture%20vertices.) and apply several geometric and topological cleanup operations on the model and generate a new, optimized `.obj` file.
-To view the resulting 3D model, the path to the open-source 3D modeling application *Blender* should be provided as a command-line argument. Otherwise, the program will create the output file but will not preview the result.
+To view the resulting 3D model using the open-source 3D modeling application *Blender*, the path to the *Blender* application executable file should be provided as a command-line argument. Otherwise, the program will create the output file but will not preview the result.
 To ensure high performance, parallelization techniques will be used. Ensuring a high software quality, parts of the program should be tested where it makes sense. For these unit and integration tests, the *xUnit Test Project* will be used.
 
 ### Program execution
