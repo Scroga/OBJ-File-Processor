@@ -31,7 +31,7 @@ public class FaceDataBuilder : MeshDataBuilder
             vertexIndex = GetValidIndex(splitData[0], meshData.Vertices.Count);
 
         if (splitData.Length >= 2 && !string.IsNullOrWhiteSpace(splitData[1]))
-            uvCoordIndex = GetValidIndex(splitData[1], meshData.UVs.Count);
+            uvCoordIndex = GetValidIndex(splitData[1], meshData.UVCoords.Count);
 
         if (splitData.Length == 3 && !string.IsNullOrWhiteSpace(splitData[2]))
             normalIndex = GetValidIndex(splitData[2], meshData.Normals.Count);

@@ -28,6 +28,6 @@ public class NormalDataBuilder : MeshDataBuilder
 
     public override void BuildMeshData(MeshData meshData, string[] line)
     {
-        meshData.Normals.Add(ParseLine(line.Skip(1).ToArray()));
+        meshData.Normals.Add(new PtrWrapper<Vector3>(ParseLine(line.Skip(1).ToArray())));
     }
 }

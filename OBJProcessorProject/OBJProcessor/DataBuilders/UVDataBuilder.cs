@@ -27,6 +27,6 @@ public class UVDataBuilder : MeshDataBuilder
 
     public override void BuildMeshData(MeshData meshData, string[] line)
     {
-        meshData.UVs.Add(ParseLine(line.Skip(1).ToArray()));
+        meshData.UVCoords.Add(new PtrWrapper<Vector2>(ParseLine(line.Skip(1).ToArray())));
     }
 }

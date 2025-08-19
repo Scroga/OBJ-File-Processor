@@ -236,7 +236,7 @@ public class NormalDataBuilderTests
         string[] inputData = { "vn", "1.0", "1.0", "1.0" };
         builder.BuildMeshData(meshData, inputData);
         var expected = new Vector3(1);
-        Assert.Equal(expected, meshData.Normals[0]);
+        Assert.Equal(expected, meshData.Normals[0].Data);
 
     }
 
@@ -248,7 +248,7 @@ public class NormalDataBuilderTests
         string[] inputData = { "vn", "1.0", "-0.1", "0.3" };
         builder.BuildMeshData(meshData, inputData);
         var expected = new Vector3(1.0f, -0.1f, 0.3f);
-        Assert.Equal(expected, meshData.Normals[0]);
+        Assert.Equal(expected, meshData.Normals[0].Data);
 
     }
 
@@ -260,7 +260,7 @@ public class NormalDataBuilderTests
         string[] inputData = { "vn", "1.0", "0.5", "0.0" };
         builder.BuildMeshData(meshData, inputData);
         var expected = new Vector3(1.0f, 0.5f, 0.0f);
-        Assert.Equal(expected, meshData.Normals[0]);
+        Assert.Equal(expected, meshData.Normals[0].Data);
     }
 
     [Fact]
@@ -277,9 +277,9 @@ public class NormalDataBuilderTests
         var expected1 = new Vector3(0.1f, 0.2f, 0.3f);
         var expected2 = new Vector3(0.3f, 0.2f, 0.1f);
         var expected3 = new Vector3(0.0f, 1.0f, 1.0f);
-        Assert.Equal(expected1, meshData.Normals[0]);
-        Assert.Equal(expected2, meshData.Normals[1]);
-        Assert.Equal(expected3, meshData.Normals[2]);
+        Assert.Equal(expected1, meshData.Normals[0].Data);
+        Assert.Equal(expected2, meshData.Normals[1].Data);
+        Assert.Equal(expected3, meshData.Normals[2].Data);
 
     }
 }
@@ -370,7 +370,7 @@ public class UVDataBuilderTests
         string[] inputData = { "vt", "1.0", "1.0"};
         builder.BuildMeshData(meshData, inputData);
         var expected = new Vector2(1);
-        Assert.Equal(expected, meshData.UVs[0]);
+        Assert.Equal(expected, meshData.UVCoords[0].Data);
 
     }
 
@@ -382,7 +382,7 @@ public class UVDataBuilderTests
         string[] inputData = { "vt", "1.0", "-0.3"};
         builder.BuildMeshData(meshData, inputData);
         var expected = new Vector2(1.0f, -0.3f);
-        Assert.Equal(expected, meshData.UVs[0]);
+        Assert.Equal(expected, meshData.UVCoords[0].Data);
 
     }
 
@@ -394,7 +394,7 @@ public class UVDataBuilderTests
         string[] inputData = { "vt", "1", "0.5"};
         builder.BuildMeshData(meshData, inputData);
         var expected = new Vector2(1.0f, 0.5f);
-        Assert.Equal(expected, meshData.UVs[0]);
+        Assert.Equal(expected, meshData.UVCoords[0].Data);
     }
 
     [Fact]
@@ -411,9 +411,9 @@ public class UVDataBuilderTests
         var expected1 = new Vector2(0.1f, 0.2f);
         var expected2 = new Vector2(0.3f, 0.2f);
         var expected3 = new Vector2(0.0f, 1.0f);
-        Assert.Equal(expected1, meshData.UVs[0]);
-        Assert.Equal(expected2, meshData.UVs[1]);
-        Assert.Equal(expected3, meshData.UVs[2]);
+        Assert.Equal(expected1, meshData.UVCoords[0].Data);
+        Assert.Equal(expected2, meshData.UVCoords[1].Data);
+        Assert.Equal(expected3, meshData.UVCoords[2].Data);
     }
 
 }
