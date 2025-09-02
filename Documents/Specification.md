@@ -12,7 +12,7 @@ The program will get command-line arguments, parse them, and set the execution p
 ## Operations
 - **Mesh transformations** applies user-defined transformations such as scale, translate, rotate. Each vertex will be stored as a vector 4D (to provide homogeneous of matrix multiplication) and then multiplied by proper transformation matrix.
 - **Model Normalization** scales the entire model to fit within a unit cube (1,1,1).
-- **Topolgy Cleanup** removes isolated vertices, faces with zero-area.
+- **Topology Cleanup** removes isolated vertices, faces with zero-area.
 
 ## Optional Operations
 The following operations are planned but will be implemented only if they prove feasible in terms of algorithmic and implementation complexity:

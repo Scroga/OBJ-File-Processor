@@ -10,13 +10,13 @@ public class UVDataBuilder : MeshDataBuilder
     private Vector2 ParseLine(string[] data)
     {
         if (data.Length != 2)
-            throw new InvalidDataException(ERROR_MESSAGE + ": invalid uv data");
+            throw new InvalidDataException(ERROR_MESSAGE + " - invalid uv data");
 
         float u = ParseToFloat(data[0]);
         float v = ParseToFloat(data[1]);
 
         if (Math.Abs(u) > 1 || Math.Abs(v) > 1)
-            throw new InvalidDataException(ERROR_MESSAGE + ": uv vector is not normalized");
+            throw new InvalidDataException(ERROR_MESSAGE + " - uv vector is not normalized");
 
         return new Vector2(u, v);
     }

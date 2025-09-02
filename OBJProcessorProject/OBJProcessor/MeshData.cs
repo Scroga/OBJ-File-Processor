@@ -1,55 +1,29 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace OBJProcessor;
 
-public record class MeshVertex // TODO: make it thread safe
+public record class MeshVertex
 {
-    private object _lock = new();
-    private Vector4 _position;
-    private ThreadSafeList<Face> _faces;
+    public Vector4 Position { get; set; }
+    public List<Face> Faces { get; } = new();
 
-
-    /// <summary>
-    /// 
-    ///     TODO: Lock vertices that are incident with faces?
-    /// 
-    /// </summary>
-
-    public Vector4 Position
-    {
-        get
-        {
-            lock (_lock)
-            {
-                return _position;
-            }
-        }
-        set
-        {
-            lock (_lock)
-            {
-                _position = value;
-            }
-        }
-
-    }
-    public ThreadSafeList<Face> Faces => _faces;
-
-    public MeshVertex(Vector3 position) : this(new Vector4(position, 1.0f)) { }
     public MeshVertex(Vector4 position)
     {
-        _position = position;
-        _faces = new();
+        Position = position;
+    }
+    public MeshVertex(Vector3 position)
+    {
+        Position = new(position, 1.0f);
     }
 }
 
 public record class VertexData
 {
-    public int VertexIndex { get; init; }
-    public int UVIndex { get; init; }
-    public int NormalIndex { get; init; }
+    public int VertexIndex { get; }
+    public int UVIndex { get; }
+    public int NormalIndex { get; }
 
     public VertexData(int vertex, int uv, int normal)
     {
@@ -59,47 +33,42 @@ public record class VertexData
     }
 }
 
-public record class Face // TODO: Make it thread safe
+public record class Face
 {
-    /// <summary>
-    /// 
-    ///     TODO: Lock vertices that are incident with faces?
-    /// 
-    /// </summary>
-    public ThreadSafeList<VertexData> Vertices { get; } = new();
-}
+    public List<VertexData> VerticesData { get; } = new();
 
-public record class PtrWrapper<T> where T : struct
-{
-    private object _lock = new();
-    private T _data;
-    public T Data
+    public Face AddVertex(int vertexIndex, int uvIndex = -1, int normalIndex = -1)
     {
-        get
-        {
-            lock (_lock)
-            {
-                return _data;
-            }
-        }
-        set
-        {
-            lock (_lock)
-            {
-                _data = value;
-            }
-        }
+        return AddVertex(new VertexData(vertexIndex, uvIndex, normalIndex));
     }
-    public PtrWrapper(T data)
+
+    public Face AddVertex(VertexData vertexData)
     {
-        _data = data;
+        VerticesData.Add(vertexData);
+        return this;
     }
 }
 
 public record class MeshData
 {
-    public ThreadSafeList<MeshVertex> Vertices = new();
-    public ThreadSafeList<Face> Faces = new();
-    public ThreadSafeList<PtrWrapper<Vector3>> Normals = new();
-    public ThreadSafeList<PtrWrapper<Vector2>> UVCoords = new();
+    public List<MeshVertex> Vertices { get; } = new();
+    public List<Vector3> Normals { get; } = new();
+    public List<Vector2> UVs { get; } = new();
+    public List<Face> Faces { get; } = new();
+
+    public MeshData AddFace(Face face) 
+    {
+        foreach (var vertex in face.VerticesData)
+            Vertices[vertex.VertexIndex].Faces.Add(face);
+
+        return this;
+    }
 }
+
+//public static class MeshDataExtention {
+//    public static MeshData RemoveSomethig(this MeshData meshData, int i) {
+//        // Do something
+//        return meshData;
+//    }
+    
+//}
