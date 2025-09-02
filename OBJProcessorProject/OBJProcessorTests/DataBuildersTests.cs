@@ -424,6 +424,20 @@ public class FaceDataBuilderTests
     public FaceDataBuilderTests()
     {
         _meshData = new();
+        _meshData.Vertices.Add(new MeshVertex(new Vector3(1.0f)));
+        _meshData.Vertices.Add(new MeshVertex(new Vector3(2.0f)));
+        _meshData.Vertices.Add(new MeshVertex(new Vector3(3.0f)));
+        _meshData.Vertices.Add(new MeshVertex(new Vector3(4.0f)));
+        _meshData.Vertices.Add(new MeshVertex(new Vector3(5.0f)));
+        _meshData.Vertices.Add(new MeshVertex(new Vector3(6.0f)));
+
+        _meshData.Normals.Add(new Vector3(0.1f));
+        _meshData.Normals.Add(new Vector3(0.2f));
+        _meshData.Normals.Add(new Vector3(0.3f));
+
+        _meshData.UVs.Add(new Vector2(0.11f));
+        _meshData.UVs.Add(new Vector2(0.22f));
+        _meshData.UVs.Add(new Vector2(0.33f));
     }
 
     [Fact]
@@ -446,5 +460,161 @@ public class FaceDataBuilderTests
         var builder = new FaceDataBuilder();
         Assert.False(builder.CanProcess(""));
     }
+  
+    [Fact]
+    public void InvalidData_TooFewArgs()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "/"};
+        Assert.Throws<InvalidDataException>(() =>
+        {
+            builder.BuildMeshData(new MeshData(), inputData);
+        });
+    }
 
+    [Fact]
+    public void InvalidData_TooManyArgs()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1", "1", "1", "1" };
+        Assert.Throws<InvalidDataException>(() =>
+        {
+            builder.BuildMeshData(new MeshData(), inputData);
+        });
+    }
+
+    [Fact]
+    public void InvalidData_CorruptedArg()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1s", "1" };
+        Assert.Throws<InvalidDataException>(() =>
+        {
+            builder.BuildMeshData(new MeshData(), inputData);
+        });
+    }
+
+    [Fact]
+    public void InvalidData_TooManyTags()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "f", "1", "1" };
+        Assert.Throws<InvalidDataException>(() =>
+        {
+            builder.BuildMeshData(new MeshData(), inputData);
+        });
+    }
+
+    [Fact]
+    public void BuildMeshTest_InvalidVertexIndex()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1", "2", "4" };
+        Assert.Throws<InvalidDataException>(() =>
+        {
+            builder.BuildMeshData(new MeshData(), inputData);
+        });
+    }
+
+    [Fact]
+    public void BuildMeshTest_OnlyVertexData()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1", "2", "3" };
+        builder.BuildMeshData(_meshData, inputData);
+        Assert.Equal(_meshData.Vertices[0], _meshData.Vertices[_meshData.Faces[0].VerticesData[0].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[1], _meshData.Vertices[_meshData.Faces[0].VerticesData[1].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[2], _meshData.Vertices[_meshData.Faces[0].VerticesData[2].VertexIndex]);
+    }
+
+    [Fact]
+    public void VertexLinking_SimpleTest()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1", "2", "3" };
+        builder.BuildMeshData(_meshData, inputData);
+        Assert.Equal(_meshData.Vertices[0].Faces[0], _meshData.Faces[0]);
+        Assert.Equal(_meshData.Vertices[1].Faces[0], _meshData.Faces[0]);
+        Assert.Equal(_meshData.Vertices[2].Faces[0], _meshData.Faces[0]);
+    }
+
+    [Fact]
+    public void VertexLinking_ComplexTest()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData1 = { "f", "1", "2", "3" };
+        string[] inputData2 = { "f", "1", "4", "3" };
+        string[] inputData3 = { "f", "5", "4", "3" };
+        builder.BuildMeshData(_meshData, inputData1);
+        builder.BuildMeshData(_meshData, inputData2);
+        builder.BuildMeshData(_meshData, inputData3);
+        Assert.Equal(_meshData.Vertices[0].Faces[0], _meshData.Faces[0]);
+        Assert.Equal(_meshData.Vertices[1].Faces[0], _meshData.Faces[0]);
+        Assert.Equal(_meshData.Vertices[2].Faces[0], _meshData.Faces[0]);
+
+        Assert.Equal(_meshData.Vertices[0].Faces[1], _meshData.Faces[1]);
+        Assert.Equal(_meshData.Vertices[3].Faces[0], _meshData.Faces[1]);
+        Assert.Equal(_meshData.Vertices[2].Faces[1], _meshData.Faces[1]);
+
+        Assert.Equal(_meshData.Vertices[4].Faces[0], _meshData.Faces[2]);
+        Assert.Equal(_meshData.Vertices[3].Faces[1], _meshData.Faces[2]);
+        Assert.Equal(_meshData.Vertices[2].Faces[2], _meshData.Faces[2]);
+    }
+
+    [Fact]
+    public void BuildMeshTest_VertexAndUV()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1/3", "2/2", "3/1" };
+        builder.BuildMeshData(_meshData, inputData);
+        Assert.Equal(_meshData.Vertices[0], _meshData.Vertices[_meshData.Faces[0].VerticesData[0].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[1], _meshData.Vertices[_meshData.Faces[0].VerticesData[1].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[2], _meshData.Vertices[_meshData.Faces[0].VerticesData[2].VertexIndex]);
+
+        Assert.Equal(_meshData.UVs[2], _meshData.UVs[_meshData.Faces[0].VerticesData[0].UVIndex]);
+        Assert.Equal(_meshData.UVs[1], _meshData.UVs[_meshData.Faces[0].VerticesData[1].UVIndex]);
+        Assert.Equal(_meshData.UVs[0], _meshData.UVs[_meshData.Faces[0].VerticesData[2].UVIndex]);
+
+        Assert.Equal(-1, _meshData.Faces[0].VerticesData[0].NormalIndex);
+        Assert.Equal(-1, _meshData.Faces[0].VerticesData[1].NormalIndex);
+        Assert.Equal(-1, _meshData.Faces[0].VerticesData[2].NormalIndex);
+    }
+
+    [Fact]
+    public void BuildMeshTest_VertexAndNormal()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1//3", "2//2", "3//1" };
+        builder.BuildMeshData(_meshData, inputData);
+        Assert.Equal(_meshData.Vertices[0], _meshData.Vertices[_meshData.Faces[0].VerticesData[0].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[1], _meshData.Vertices[_meshData.Faces[0].VerticesData[1].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[2], _meshData.Vertices[_meshData.Faces[0].VerticesData[2].VertexIndex]);
+
+        Assert.Equal(_meshData.Normals[2], _meshData.Normals[_meshData.Faces[0].VerticesData[0].NormalIndex]);
+        Assert.Equal(_meshData.Normals[1], _meshData.Normals[_meshData.Faces[0].VerticesData[1].NormalIndex]);
+        Assert.Equal(_meshData.Normals[0], _meshData.Normals[_meshData.Faces[0].VerticesData[2].NormalIndex]);
+
+        Assert.Equal(-1, _meshData.Faces[0].VerticesData[0].UVIndex);
+        Assert.Equal(-1, _meshData.Faces[0].VerticesData[1].UVIndex);
+        Assert.Equal(-1, _meshData.Faces[0].VerticesData[2].UVIndex);
+    }
+
+    [Fact]
+    public void BuildMeshTest_VertexUVNormal()
+    {
+        var builder = new FaceDataBuilder();
+        string[] inputData = { "f", "1/2/3", "2/3/2", "3/1/1" };
+        builder.BuildMeshData(_meshData, inputData);
+        Assert.Equal(_meshData.Vertices[0], _meshData.Vertices[_meshData.Faces[0].VerticesData[0].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[1], _meshData.Vertices[_meshData.Faces[0].VerticesData[1].VertexIndex]);
+        Assert.Equal(_meshData.Vertices[2], _meshData.Vertices[_meshData.Faces[0].VerticesData[2].VertexIndex]);
+
+        Assert.Equal(_meshData.UVs[1], _meshData.UVs[_meshData.Faces[0].VerticesData[0].UVIndex]);
+        Assert.Equal(_meshData.UVs[2], _meshData.UVs[_meshData.Faces[0].VerticesData[1].UVIndex]);
+        Assert.Equal(_meshData.UVs[0], _meshData.UVs[_meshData.Faces[0].VerticesData[2].UVIndex]);
+
+        Assert.Equal(_meshData.Normals[2], _meshData.Normals[_meshData.Faces[0].VerticesData[0].NormalIndex]);
+        Assert.Equal(_meshData.Normals[1], _meshData.Normals[_meshData.Faces[0].VerticesData[1].NormalIndex]);
+        Assert.Equal(_meshData.Normals[0], _meshData.Normals[_meshData.Faces[0].VerticesData[2].NormalIndex]);
+    }
 }

@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace OBJProcessor;
 
@@ -33,7 +35,18 @@ public record class VertexData
 
 public record class Face
 {
-    public List<VertexData> Vertices { get; } = new();
+    public List<VertexData> VerticesData { get; } = new();
+
+    public Face AddVertex(int vertexIndex, int uvIndex = -1, int normalIndex = -1)
+    {
+        return AddVertex(new VertexData(vertexIndex, uvIndex, normalIndex));
+    }
+
+    public Face AddVertex(VertexData vertexData)
+    {
+        VerticesData.Add(vertexData);
+        return this;
+    }
 }
 
 public record class MeshData
@@ -42,4 +55,20 @@ public record class MeshData
     public List<Vector3> Normals { get; } = new();
     public List<Vector2> UVs { get; } = new();
     public List<Face> Faces { get; } = new();
+
+    public MeshData AddFace(Face face) 
+    {
+        foreach (var vertex in face.VerticesData)
+            Vertices[vertex.VertexIndex].Faces.Add(face);
+
+        return this;
+    }
 }
+
+//public static class MeshDataExtention {
+//    public static MeshData RemoveSomethig(this MeshData meshData, int i) {
+//        // Do something
+//        return meshData;
+//    }
+    
+//}

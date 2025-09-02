@@ -10,10 +10,10 @@ public class FaceDataBuilder : MeshDataBuilder
     {
         if (int.TryParse(data, out int index))
         {
-            index--;
-            if (index >= 0 && index < maxValue) return index;
+            if (index >= 0 && index <= maxValue) 
+                return index - 1;
         }
-        throw new InvalidDataException(ERROR_MESSAGE + ": invalid face data index");
+        throw new InvalidDataException(ERROR_MESSAGE + " - invalid face data index");
     }
 
     private VertexData ParseVertexData(MeshData meshData, string data)
@@ -21,9 +21,9 @@ public class FaceDataBuilder : MeshDataBuilder
         string[] splitData = data.Split('/');
 
         if (splitData.Length < 1 || splitData.Length > 3)
-            throw new InvalidDataException(ERROR_MESSAGE + ": invalid face data format");
+            throw new InvalidDataException(ERROR_MESSAGE + " - invalid face data amount");
 
-        int vertexIndex = 0;
+        int vertexIndex = -1;
         int uvCoordIndex = -1;
         int normalIndex = -1;
 
@@ -36,6 +36,9 @@ public class FaceDataBuilder : MeshDataBuilder
         if (splitData.Length == 3 && !string.IsNullOrWhiteSpace(splitData[2]))
             normalIndex = GetValidIndex(splitData[2], meshData.Normals.Count);
 
+        if(vertexIndex == -1)
+            throw new InvalidDataException(ERROR_MESSAGE + " - invalid face data format");
+
         return new VertexData(vertexIndex, uvCoordIndex, normalIndex);
     }
 
@@ -47,9 +50,14 @@ public class FaceDataBuilder : MeshDataBuilder
     public override void BuildMeshData(MeshData meshData, string[] line)
     {
         Face face = new();
-        foreach (var faceData in line)
+        foreach (var faceData in line.Skip(1).ToArray())
         {
-            face.Vertices.Add(ParseVertexData(meshData, faceData));
+            face.AddVertex(ParseVertexData(meshData, faceData));
+            meshData.AddFace(face);
+
+            //var vertexData = ParseVertexData(meshData, faceData);
+            //meshData.Vertices[vertexData.VertexIndex].Faces.Add(face);
+            //face.AddVertex(vertexData);
         }
 
         meshData.Faces.Add(face);

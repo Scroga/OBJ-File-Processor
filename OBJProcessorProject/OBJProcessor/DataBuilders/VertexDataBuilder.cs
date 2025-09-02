@@ -8,9 +8,10 @@ public class VertexDataBuilder : MeshDataBuilder
 {
     public const string VERTEX_TAG = "v";
 
-    private Vector3 ParseLine(string[] data) {
+    private Vector3 ParseLine(string[] data)
+    {
         if (data.Length != 3 && data.Length != 4)
-            throw new InvalidDataException(ERROR_MESSAGE + ": invalid vertex data");
+            throw new InvalidDataException(ERROR_MESSAGE + " - invalid vertex data");
 
         float x = ParseToFloat(data[0]);
         float y = ParseToFloat(data[1]);
