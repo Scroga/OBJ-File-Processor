@@ -18,5 +18,3 @@ public abstract class MeshDataBuilder
     public abstract bool CanProcess(string tag);
     public abstract void BuildMeshData(MeshData meshData, string[] line);
 }
-
-// TODO: PARAMETER_SPACE= "vp"

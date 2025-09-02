@@ -6,10 +6,11 @@ namespace OBJProcessor;
 
 public class OBJDataReader
 {
-    public char COMMENT_TAG = '#'; 
+    public char COMMENT_TAG = '#';
     private List<MeshDataBuilder> _builders = new();
 
-    public OBJDataReader SetBuilder(MeshDataBuilder builder) {
+    public OBJDataReader SetBuilder(MeshDataBuilder builder)
+    {
         _builders.Add(builder);
         return this;
     }
@@ -21,21 +22,19 @@ public class OBJDataReader
         string? line = reader.ReadLine();
         while (line != null)
         {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                line = reader.ReadLine();
-                continue;
-            }
+            Console.WriteLine(line);
             string[] splitLine = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            if (splitLine[0].StartsWith(COMMENT_TAG)) continue;
-
-            foreach (var builder in _builders)
+            if (!splitLine[0].StartsWith(COMMENT_TAG) && splitLine.Length != 0)
             {
-                if (builder.CanProcess(splitLine[0])) {
-                    builder.BuildMeshData(meshData, splitLine);
-                    line = reader.ReadLine();
-                }     
+                foreach (var builder in _builders)
+                {
+                    if (builder.CanProcess(splitLine[0]))
+                    {
+                        builder.BuildMeshData(meshData, splitLine);
+                        line = reader.ReadLine();
+                    }
+                }
             }
             line = reader.ReadLine();
         }

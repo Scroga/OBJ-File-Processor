@@ -9,7 +9,7 @@ public record class MeshVertex // TODO: make it thread safe
     private object _lock = new();
     private Vector4 _position;
     private ThreadSafeList<Face> _faces;
-    
+
 
     /// <summary>
     /// 

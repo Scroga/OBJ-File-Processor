@@ -6,7 +6,7 @@ namespace OBJProcessor.DataBuilders;
 
 public class VertexDataBuilder : MeshDataBuilder
 {
-    public const string VERTEX_TAG = "v";
+    public static string VERTEX_TAG = "v";
 
     private Vector3 ParseLine(string[] data) {
         if (data.Length != 3 && data.Length != 4)

@@ -5,7 +5,7 @@ namespace OBJProcessor.DataBuilders;
 
 public class UVDataBuilder : MeshDataBuilder
 {
-    public const string UV_TAG = "vt";
+    public static string UV_TAG = "vt";
 
     private Vector2 ParseLine(string[] data)
     {

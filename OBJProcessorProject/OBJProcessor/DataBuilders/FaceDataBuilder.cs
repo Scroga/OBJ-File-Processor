@@ -4,19 +4,19 @@ namespace OBJProcessor.DataBuilders;
 
 public class FaceDataBuilder : MeshDataBuilder
 {
-    public const string FACE_TAG = "f";
+    public static string FACE_TAG = "f";
 
-    private int GetValidIndex(string data, int maxValue)
+    private int GetValidIndex(string data)
     {
         if (int.TryParse(data, out int index))
         {
-            index--;
-            if (index >= 0 && index < maxValue) return index;
+            if (index >= 0) index--;
+            return index;
         }
         throw new InvalidDataException(ERROR_MESSAGE + ": invalid face data index");
     }
 
-    private VertexData ParseVertexData(MeshData meshData, string data)
+    private VertexData ParseVertexData(string data)
     {
         string[] splitData = data.Split('/');
 
@@ -24,17 +24,17 @@ public class FaceDataBuilder : MeshDataBuilder
             throw new InvalidDataException(ERROR_MESSAGE + ": invalid face data format");
 
         int vertexIndex = 0;
-        int uvCoordIndex = -1;
-        int normalIndex = -1;
+        int uvCoordIndex = 0;
+        int normalIndex = 0;
 
         if (splitData.Length >= 1 && !string.IsNullOrWhiteSpace(splitData[0]))
-            vertexIndex = GetValidIndex(splitData[0], meshData.Vertices.Count);
+            vertexIndex = GetValidIndex(splitData[0]);
 
         if (splitData.Length >= 2 && !string.IsNullOrWhiteSpace(splitData[1]))
-            uvCoordIndex = GetValidIndex(splitData[1], meshData.UVCoords.Count);
+            uvCoordIndex = GetValidIndex(splitData[1]);
 
         if (splitData.Length == 3 && !string.IsNullOrWhiteSpace(splitData[2]))
-            normalIndex = GetValidIndex(splitData[2], meshData.Normals.Count);
+            normalIndex = GetValidIndex(splitData[2]);
 
         return new VertexData(vertexIndex, uvCoordIndex, normalIndex);
     }
@@ -47,9 +47,9 @@ public class FaceDataBuilder : MeshDataBuilder
     public override void BuildMeshData(MeshData meshData, string[] line)
     {
         Face face = new();
-        foreach (var faceData in line)
+        for (int i = 1; i < line.Length; i++)
         {
-            face.Vertices.Add(ParseVertexData(meshData, faceData));
+            face.Vertices.Add(ParseVertexData(line[i]));
         }
 
         meshData.Faces.Add(face);

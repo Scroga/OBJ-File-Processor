@@ -7,31 +7,40 @@ public class ThreadSafeEnumerator<T> : IEnumerator<T>
 {
     private readonly IEnumerator<T> _inner;
     private readonly object _lock;
+    private int _disposed;
 
     public ThreadSafeEnumerator(IEnumerator<T> inner, object @lock)
     {
         _inner = inner;
         _lock = @lock;
+        _disposed = 0;
         Monitor.Enter(_lock);
     }
 
     public T Current => _inner.Current;
     object System.Collections.IEnumerator.Current => Current!;
 
-
     public bool MoveNext()
     {
+        if (_disposed == 1)
+            throw new ObjectDisposedException(nameof(ThreadSafeEnumerator<T>));
         return _inner.MoveNext();
     }
 
     public void Reset()
     {
+        if (_disposed == 1)
+            throw new ObjectDisposedException(nameof(ThreadSafeEnumerator<T>));
         _inner.Reset();
     }
 
     public void Dispose()
     {
-        Monitor.Exit(_lock);
+        if (Interlocked.Exchange(ref _disposed, 1) == 0)
+        {
+            Monitor.Exit(_lock);
+            _inner.Dispose();
+        }
     }
 }
 
