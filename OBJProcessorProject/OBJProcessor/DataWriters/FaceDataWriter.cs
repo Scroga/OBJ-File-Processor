@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace OBJProcessor.DataWriters;
 
@@ -9,25 +10,25 @@ public class FaceDataWriter : MeshDataWriter
     private string WriteVertexData(VertexData vertexData) {
         string output = "";
         int vertexIndex = vertexData.VertexIndex;
-        int uvCoordIndex = vertexData.UVIndex;
-        int normalIndex = vertexData.NormalIndex;
+        int? uvCoordIndex = vertexData.UVIndex;
+        int? normalIndex = vertexData.NormalIndex;
 
-        if (vertexIndex != 0)
+        output += (vertexIndex < 0 ? vertexIndex : vertexIndex + 1).ToString();
+
+        if (uvCoordIndex.HasValue || normalIndex.HasValue)
         {
-            output += vertexIndex.ToString();
-            if (uvCoordIndex != 0 || normalIndex != 0)
+            output += '/';
+            if (uvCoordIndex.HasValue)
+            {
+                output += (uvCoordIndex < 0 ? uvCoordIndex : uvCoordIndex + 1).ToString();
+            }
+            if (normalIndex.HasValue)
             {
                 output += '/';
-                if (uvCoordIndex != 0)
-                {
-                    output += uvCoordIndex.ToString();
-                }
-                if (normalIndex != 0)
-                {
-                    output += ('/' + normalIndex.ToString());
-                }
+                output += (normalIndex < 0 ? normalIndex : normalIndex + 1).ToString();
             }
         }
+
         return output;
     }
 
@@ -46,7 +47,8 @@ public class FaceDataWriter : MeshDataWriter
     {
         foreach (var face in mesh.Faces)
         {
-            writer.WriteLine(Tag + WriteFace(face));
+            if(face is not null)
+                writer.WriteLine(Tag + WriteFace(face));
         }
     }
 }

@@ -15,9 +15,6 @@ public class NormalDataBuilder : MeshDataBuilder
         float y = ParseToFloat(data[1]);
         float z = ParseToFloat(data[2]);
 
-        if(Math.Abs(x) > 1 || Math.Abs(y) > 1 || Math.Abs(z) > 1)
-            throw new InvalidDataException(ERROR_MESSAGE + " - normal vector is not normalized");
-
         return new Vector3(x, y, z);
     }
 

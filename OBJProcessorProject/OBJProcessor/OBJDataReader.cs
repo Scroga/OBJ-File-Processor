@@ -22,17 +22,14 @@ public class OBJDataReader
         string? line = reader.ReadLine();
         while (line != null)
         {
-            Console.WriteLine(line);
             string[] splitLine = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            if (!splitLine[0].StartsWith(COMMENT_TAG) && splitLine.Length != 0)
+            if (splitLine.Length != 0 && !splitLine[0].StartsWith(COMMENT_TAG))
             {
                 foreach (var builder in _builders)
                 {
                     if (builder.CanProcess(splitLine[0]))
                     {
                         builder.BuildMeshData(meshData, splitLine);
-                        line = reader.ReadLine();
                     }
                 }
             }

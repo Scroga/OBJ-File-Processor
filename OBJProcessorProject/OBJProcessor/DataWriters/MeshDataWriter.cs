@@ -24,7 +24,7 @@ public abstract class MeshDataWriter
     public string WriteVector(Vector4 vector)
     {
         float W = vector.W;
-        return WriteVector(new Vector3(vector.X / W, vector.Y / W, vector.Z / W)) + " 1.0";
+        return WriteVector(new Vector3(vector.X / W, vector.Y / W, vector.Z / W));
     }
 
     public string WriteVector(Vector3 vector)

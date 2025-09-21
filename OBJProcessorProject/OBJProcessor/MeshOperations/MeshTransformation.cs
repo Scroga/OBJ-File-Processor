@@ -8,7 +8,7 @@ public static class MeshTransformation
     {
         Parallel.ForEach(mesh.Vertices, vertex =>
         {
-            vertex.Position = Vector4.Transform(vertex.Position, transformationMatrix);
+            vertex!.Position = Vector4.Transform(vertex.Position, transformationMatrix);
         });
         return mesh;
     }

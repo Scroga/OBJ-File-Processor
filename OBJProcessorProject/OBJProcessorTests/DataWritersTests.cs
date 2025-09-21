@@ -66,7 +66,7 @@ public class MeshDataWriterBaseTests
     public void WriteVector4D()
     {
         var dataWriter = new VertexDataWriter("some tag");
-        Assert.Equal(" -4.021 2.022 -0.023 1.0", dataWriter.WriteVector(new Vector4(8.042f, -4.044f, 0.046f, -2.0f)));
+        Assert.Equal(" -4.021 2.022 -0.023", dataWriter.WriteVector(new Vector4(8.042f, -4.044f, 0.046f, -2.0f)));
     }
 
 }
@@ -101,7 +101,7 @@ public class VertexDataWriterTests
         vertexWriter.WriteMeshData(stringWriter, meshData);
         var expected =
             """
-            v 0.1 0.1 0.1 1.0
+            v 0.1 0.1 0.1
 
             """;
 
@@ -120,7 +120,7 @@ public class VertexDataWriterTests
         vertexWriter.WriteMeshData(stringWriter, meshData);
         var expected =
             """
-            v -1.1 -2.02 -1.0011 1.0
+            v -1.1 -2.02 -1.0011
 
             """;
 
@@ -142,10 +142,10 @@ public class VertexDataWriterTests
         vertexWriter.WriteMeshData(stringWriter, meshData);
         var expected =
             """
-            v -1.1 -2.02 -1.0011 1.0
-            v 2.2 2.2 2.2 1.0
-            v -32.2 -32.2 -32.2 1.0
-            v 1.2 4.04 -2.0022 1.0
+            v -1.1 -2.02 -1.0011
+            v 2.2 2.2 2.2
+            v -32.2 -32.2 -32.2
+            v 1.2 4.04 -2.0022
 
             """;
 
@@ -313,10 +313,10 @@ public class FaceDataWriterTests
         var meshData = new MeshData();
 
         var face = new Face();
-        face.Vertices.Add(new VertexData(1, 0, 0));
-        face.Vertices.Add(new VertexData(2, 0, 0));
-        face.Vertices.Add(new VertexData(3, 0, 0));
-        face.Vertices.Add(new VertexData(4, 0, 0));
+        face.Vertices.Add(new VertexData(0));
+        face.Vertices.Add(new VertexData(1));
+        face.Vertices.Add(new VertexData(2));
+        face.Vertices.Add(new VertexData(3));
 
         meshData.Faces.Add(face);
 
@@ -339,9 +339,9 @@ public class FaceDataWriterTests
         var meshData = new MeshData();
 
         var face = new Face();
-        face.Vertices.Add(new VertexData(1, 4, 0));
-        face.Vertices.Add(new VertexData(2, 5, 0));
-        face.Vertices.Add(new VertexData(3, 6, 0));
+        face.Vertices.Add(new VertexData(0, uv: 3));
+        face.Vertices.Add(new VertexData(1, uv: 4));
+        face.Vertices.Add(new VertexData(2, uv: 5));
 
         meshData.Faces.Add(face);
 
@@ -364,9 +364,9 @@ public class FaceDataWriterTests
         var meshData = new MeshData();
 
         var face = new Face();
-        face.Vertices.Add(new VertexData(1, 0, 4));
-        face.Vertices.Add(new VertexData(2, 0, 5));
-        face.Vertices.Add(new VertexData(3, 0, 6));
+        face.Vertices.Add(new VertexData(0, normal: 3));
+        face.Vertices.Add(new VertexData(1, normal: 4));
+        face.Vertices.Add(new VertexData(2, normal: 5));
 
         meshData.Faces.Add(face);
 
@@ -389,9 +389,9 @@ public class FaceDataWriterTests
         var meshData = new MeshData();
 
         var face = new Face();
+        face.Vertices.Add(new VertexData(0, 6, 3));
         face.Vertices.Add(new VertexData(1, 7, 4));
         face.Vertices.Add(new VertexData(2, 8, 5));
-        face.Vertices.Add(new VertexData(3, 9, 6));
 
         meshData.Faces.Add(face);
 
@@ -414,27 +414,27 @@ public class FaceDataWriterTests
         var meshData = new MeshData();
 
         var face1 = new Face();
-        face1.Vertices.Add(new VertexData(1, 0, 0));
-        face1.Vertices.Add(new VertexData(2, 0, 0));
-        face1.Vertices.Add(new VertexData(3, 0, 0));
+        face1.Vertices.Add(new VertexData(0));
+        face1.Vertices.Add(new VertexData(1));
+        face1.Vertices.Add(new VertexData(2));
         meshData.Faces.Add(face1);
 
         var face2 = new Face();
-        face2.Vertices.Add(new VertexData(3, 1, 0));
-        face2.Vertices.Add(new VertexData(4, 2, 0));
-        face2.Vertices.Add(new VertexData(5, 3, 0));
+        face2.Vertices.Add(new VertexData(2, uv: 0));
+        face2.Vertices.Add(new VertexData(3, uv: 1));
+        face2.Vertices.Add(new VertexData(4, uv: 2));
         meshData.Faces.Add(face2);
 
         var face3 = new Face();
-        face3.Vertices.Add(new VertexData(6, 4, 1));
-        face3.Vertices.Add(new VertexData(3, 5, 3));
-        face3.Vertices.Add(new VertexData(7, 6, 5));
+        face3.Vertices.Add(new VertexData(5, 3, 0));
+        face3.Vertices.Add(new VertexData(2, 4, 2));
+        face3.Vertices.Add(new VertexData(6, 5, 4));
         meshData.Faces.Add(face3);
 
         var face4 = new Face();
-        face4.Vertices.Add(new VertexData(6, 0, 1));
-        face4.Vertices.Add(new VertexData(3, 0, 3));
-        face4.Vertices.Add(new VertexData(7, 0, 5));
+        face4.Vertices.Add(new VertexData(5, normal: 0));
+        face4.Vertices.Add(new VertexData(2, normal: 2));
+        face4.Vertices.Add(new VertexData(6, normal: 4));
         meshData.Faces.Add(face4);
 
         var facesWriter = new FaceDataWriter("f");
@@ -460,21 +460,21 @@ public class FaceDataWriterTests
         var meshData = new MeshData();
 
         var face1 = new Face();
+        face1.Vertices.Add(new VertexData(0, 6, 3));
         face1.Vertices.Add(new VertexData(1, 7, 4));
         face1.Vertices.Add(new VertexData(2, 8, 5));
-        face1.Vertices.Add(new VertexData(3, 9, 6));
         meshData.Faces.Add(face1);
 
         var face2 = new Face();
-        face2.Vertices.Add(new VertexData(10, 70, 40));
-        face2.Vertices.Add(new VertexData(20, 80, 50));
-        face2.Vertices.Add(new VertexData(30, 90, 60));
+        face2.Vertices.Add(new VertexData(9, 69, 39));
+        face2.Vertices.Add(new VertexData(19, 79, 49));
+        face2.Vertices.Add(new VertexData(29, 89, 59));
         meshData.Faces.Add(face2);
 
         var face3 = new Face();
-        face3.Vertices.Add(new VertexData(11, 74, 47));
-        face3.Vertices.Add(new VertexData(22, 85, 58));
-        face3.Vertices.Add(new VertexData(33, 96, 69));
+        face3.Vertices.Add(new VertexData(10, 73, 46));
+        face3.Vertices.Add(new VertexData(21, 84, 57));
+        face3.Vertices.Add(new VertexData(32, 95, 68));
         meshData.Faces.Add(face3);
 
         var facesWriter = new FaceDataWriter("f");

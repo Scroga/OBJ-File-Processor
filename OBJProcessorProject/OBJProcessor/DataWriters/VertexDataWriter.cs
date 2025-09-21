@@ -10,7 +10,8 @@ public class VertexDataWriter : MeshDataWriter
     {
         foreach (var vertex in mesh.Vertices)
         {
-             writer.WriteLine(Tag + WriteVector(vertex.Position));
+            if(vertex is not null)
+             writer.WriteLine(Tag + WriteVector(vertex!.Position));
         }
     }
 }

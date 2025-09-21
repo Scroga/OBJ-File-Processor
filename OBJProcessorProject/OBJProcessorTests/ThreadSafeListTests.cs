@@ -21,6 +21,40 @@ public class ThreadSafeListTests
     }
 
     [Fact]
+    public void NegativeIndex_Set() {
+        var list = new ThreadSafeList<int>();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        list[-1] = -4;
+        list[-2] = -3;
+        list[-3] = -2;
+        list[-4] = -1;
+
+        Assert.Equal(-1, list[0]);
+        Assert.Equal(-2, list[1]);
+        Assert.Equal(-3, list[2]);
+        Assert.Equal(-4, list[3]);
+    }
+
+    [Fact]
+    public void NegativeIndex_Get()
+    {
+        var list = new ThreadSafeList<int>();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        Assert.Equal(4, list[-1]);
+        Assert.Equal(3, list[-2]);
+        Assert.Equal(2, list[-3]);
+        Assert.Equal(1, list[-4]);
+    }
+
+    [Fact]
     public void SimpleAddTest()
     {
         int numberOfTasks = 100;

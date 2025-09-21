@@ -30,8 +30,11 @@ public class MeshDataTransformer : MeshDataProcessor
 
         Parallel.For(0, meshData.Vertices.Count, i =>
         {
-            Vector4 newPosition = Vector4.Transform(meshData.Vertices[i].Position, transformMatrix);
-            meshData.Vertices[i].Position = newPosition;
+            if (meshData.Vertices[i] is not null)
+            {
+                Vector4 newPosition = Vector4.Transform(meshData.Vertices[i]!.Position, transformMatrix);
+                meshData.Vertices[i]!.Position = newPosition;
+            }
         });
     }
 }

@@ -1,7 +1,7 @@
 ﻿using OBJProcessor.DataWriters;
 namespace OBJProcessor;
 
-class OBJDataWriter
+public class OBJDataWriter
 {
     private List<MeshDataWriter> _meshWriters = new();
 

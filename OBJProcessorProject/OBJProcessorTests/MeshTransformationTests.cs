@@ -11,7 +11,7 @@ public class MeshTransformationTests
         new Vector3(0.0f, 0.0f, 1.0f),
         new Vector3(1.0f, 0.0f, 1.0f),
         new Vector3(1.0f, 0.0f, 0.0f),
-    };      
+    };
 
     private MeshData CreateMesh()
     {
@@ -44,7 +44,7 @@ public class MeshTransformationTests
 
         for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            AssertAreEqual(_vertexPositions[i], mesh.Vertices[i].Position);
+            AssertAreEqual(_vertexPositions[i], mesh.Vertices[i]!.Position);
         }
     }
 
@@ -58,7 +58,7 @@ public class MeshTransformationTests
 
         for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i].Position);
+            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i]!.Position);
         }
     }
 
@@ -72,7 +72,7 @@ public class MeshTransformationTests
 
         for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i].Position);
+            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i]!.Position);
         }
     }
 
@@ -86,7 +86,7 @@ public class MeshTransformationTests
 
         for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i].Position);
+            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i]!.Position);
         }
     }
 
@@ -100,7 +100,7 @@ public class MeshTransformationTests
 
         for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i].Position);
+            AssertAreEqual(_vertexPositions[i] + translation, mesh.Vertices[i]!.Position);
         }
     }
 
@@ -120,7 +120,7 @@ public class MeshTransformationTests
 
         for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            AssertAreEqual(expectedVertexPositions[i], mesh.Vertices[i].Position);
+            AssertAreEqual(expectedVertexPositions[i], mesh.Vertices[i]!.Position);
         }
     }
 

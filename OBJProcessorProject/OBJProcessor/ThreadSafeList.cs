@@ -72,20 +72,33 @@ public class ThreadSafeList<T> : IList<T>
         }
     }
 
+    // It supports negative index
     public T this[int index]
     {
         get
         {
             lock (_lock)
             {
-                return _inner[index];
+                int actualIdex;
+                if (index < 0)
+                    actualIdex = _inner.Count + index;
+                else
+                    actualIdex = index;
+
+                return _inner[actualIdex];
             }
         }
         set
         {
             lock (_lock)
             {
-                _inner[index] = value;
+                int actualIdex;
+                if (index < 0)
+                    actualIdex = _inner.Count + index;
+                else
+                    actualIdex = index;
+
+                _inner[actualIdex] = value;
             }
         }
     }

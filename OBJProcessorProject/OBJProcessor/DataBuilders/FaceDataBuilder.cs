@@ -4,37 +4,41 @@ namespace OBJProcessor.DataBuilders;
 
 public class FaceDataBuilder : MeshDataBuilder
 {
-    public static string FACE_TAG = "f";
+    public const string FACE_TAG = "f";
 
-    private int GetValidIndex(string data)
+
+    private int GetValidIndex(string data, int maxValue)
     {
         if (int.TryParse(data, out int index))
         {
-            if (index >= 0) index--;
-            return index;
+            if (index > maxValue)
+                throw new InvalidDataException(ERROR_MESSAGE + " - invalid face data index");
+
+            return index < 0 ? index : index - 1;
+
         }
-        throw new InvalidDataException(ERROR_MESSAGE + ": invalid face data index");
+        throw new InvalidDataException(ERROR_MESSAGE + " - invalid face data format");
     }
 
-    private VertexData ParseVertexData(string data)
+    private VertexData ParseVertexData(MeshData meshData, string data)
     {
         string[] splitData = data.Split('/');
 
         if (splitData.Length < 1 || splitData.Length > 3)
-            throw new InvalidDataException(ERROR_MESSAGE + ": invalid face data format");
+            throw new InvalidDataException(ERROR_MESSAGE + " - invalid face data amount");
 
         int vertexIndex = 0;
-        int uvCoordIndex = 0;
-        int normalIndex = 0;
+        int? uvCoordIndex = null;
+        int? normalIndex = null;
 
         if (splitData.Length >= 1 && !string.IsNullOrWhiteSpace(splitData[0]))
-            vertexIndex = GetValidIndex(splitData[0]);
+            vertexIndex = GetValidIndex(splitData[0], meshData.Vertices.Count);
 
         if (splitData.Length >= 2 && !string.IsNullOrWhiteSpace(splitData[1]))
-            uvCoordIndex = GetValidIndex(splitData[1]);
+            uvCoordIndex = GetValidIndex(splitData[1], meshData.UVCoords.Count);
 
         if (splitData.Length == 3 && !string.IsNullOrWhiteSpace(splitData[2]))
-            normalIndex = GetValidIndex(splitData[2]);
+            normalIndex = GetValidIndex(splitData[2], meshData.Normals.Count);
 
         return new VertexData(vertexIndex, uvCoordIndex, normalIndex);
     }
@@ -47,9 +51,11 @@ public class FaceDataBuilder : MeshDataBuilder
     public override void BuildMeshData(MeshData meshData, string[] line)
     {
         Face face = new();
-        for (int i = 1; i < line.Length; i++)
+        foreach (var faceData in line.Skip(1).ToArray())
         {
-            face.Vertices.Add(ParseVertexData(line[i]));
+            var vertexData = ParseVertexData(meshData, faceData);
+            meshData.Vertices[vertexData.VertexIndex]!.Faces.Add(face);
+            face.Vertices.Add(vertexData);
         }
 
         meshData.Faces.Add(face);

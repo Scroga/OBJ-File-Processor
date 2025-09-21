@@ -1,31 +1,57 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace OBJProcessor;
 
 public record class MeshVertex
 {
-    public Vector4 Position { get; set; }
-    public List<Face> Faces { get; } = new();
+    private object _lock = new();
+    private Vector4 _position;
+    private ThreadSafeList<Face> _faces;
+    public Vector4 Position  
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _position;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _position = value;
+            }
+        }
 
+    }
+    public ThreadSafeList<Face> Faces => _faces;
+
+    public MeshVertex(Vector3 position) : this(new Vector4(position, 1.0f)) { }
     public MeshVertex(Vector4 position)
     {
-        Position = position;
+        _position = position;
+        _faces = new();
     }
-    public MeshVertex(Vector3 position)
-    {
-        Position = new(position, 1.0f);
+
+    public Vector3 GetAsVec3() {
+        float w = Position.W;
+        float x = Position.X / w;
+        float y = Position.Y / w;
+        float z = Position.Z / w;
+        return new Vector3(x, y, z);
     }
 }
 
 public record class VertexData
 {
-    public int VertexIndex { get; }
-    public int UVIndex { get; }
-    public int NormalIndex { get; }
+    public int VertexIndex { get; init; }
+    public int? UVIndex { get; init; }
+    public int? NormalIndex { get; init; }
 
-    public VertexData(int vertex, int uv, int normal)
+    public VertexData(int vertex, int? uv = null, int? normal = null)
     {
         VertexIndex = vertex;
         UVIndex = uv;
@@ -35,40 +61,40 @@ public record class VertexData
 
 public record class Face
 {
-    public List<VertexData> VerticesData { get; } = new();
+    public ThreadSafeList<VertexData> Vertices { get; } = new();
+}
 
-    public Face AddVertex(int vertexIndex, int uvIndex = -1, int normalIndex = -1)
+public record class PtrWrapper<T> where T : struct
+{
+    private object _lock = new();
+    private T _data;
+    public T Data
     {
-        return AddVertex(new VertexData(vertexIndex, uvIndex, normalIndex));
+        get
+        {
+            lock (_lock)
+            {
+                return _data;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _data = value;
+            }
+        }
     }
-
-    public Face AddVertex(VertexData vertexData)
+    public PtrWrapper(T data)
     {
-        VerticesData.Add(vertexData);
-        return this;
+        _data = data;
     }
 }
 
 public record class MeshData
 {
-    public List<MeshVertex> Vertices { get; } = new();
-    public List<Vector3> Normals { get; } = new();
-    public List<Vector2> UVs { get; } = new();
-    public List<Face> Faces { get; } = new();
-
-    public MeshData AddFace(Face face) 
-    {
-        foreach (var vertex in face.VerticesData)
-            Vertices[vertex.VertexIndex].Faces.Add(face);
-
-        return this;
-    }
+    public ThreadSafeList<MeshVertex?> Vertices = new();
+    public ThreadSafeList<Face?> Faces = new();
+    public ThreadSafeList<PtrWrapper<Vector3>> Normals = new();
+    public ThreadSafeList<PtrWrapper<Vector2>> UVCoords = new();
 }
-
-//public static class MeshDataExtention {
-//    public static MeshData RemoveSomethig(this MeshData meshData, int i) {
-//        // Do something
-//        return meshData;
-//    }
-    
-//}
