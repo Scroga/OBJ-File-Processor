@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using OBJProcessor;
 using OBJProcessor.DataBuilders;
-using OBJProcessor.DataProcessors;
 using OBJProcessor.DataWriters;
 using OBJProcessor.MeshOperations;
 

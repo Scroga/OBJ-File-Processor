@@ -179,43 +179,6 @@ public class ThreadSafeEnumeratorTests
         Assert.Equal(2, en2Current);
     }
 
-    //[Fact]
-    //public void Concurrent_Enumeration_While_Adding()
-    //{
-    //    var list = new ThreadSafeList<int>();
-    //    int itemsToAdd = 100;
-    //    var allEnumeratedCounts = new ConcurrentBag<int>();
-
-    //    var writerTask = Task.Run(() =>
-    //    {
-    //        for (int i = 0; i < itemsToAdd; i++)
-    //        {
-    //            list.Add(i);
-    //            Thread.Sleep(1);
-    //        }
-    //    });
-
-    //    var readerTask = Task.Run(() =>
-    //    {
-    //        while (writerTask.IsCompleted == false)
-    //        {
-    //            int countDuringEnumeration = 0;
-    //            foreach (var item in list)
-    //            {
-    //                countDuringEnumeration++;
-    //                Thread.Sleep(1);
-    //            }
-    //            allEnumeratedCounts.Add(countDuringEnumeration);
-    //        }
-    //    });
-
-    //    Task.WaitAll(writerTask, readerTask);
-    //    Assert.True(allEnumeratedCounts.All(count => count >= 0));
-    //    Assert.True(allEnumeratedCounts.Any(), "No enumerations were performed.");
-
-    //    Console.WriteLine($"Enumeration counts ranged from {allEnumeratedCounts.Min()} to {allEnumeratedCounts.Max()}");
-    //}
-
     [Fact]
     public void MultipleIterations()
     {

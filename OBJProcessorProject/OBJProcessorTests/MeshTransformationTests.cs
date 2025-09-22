@@ -105,10 +105,10 @@ public class MeshTransformationTests
     }
 
     [Fact]
-    public void Rotation_01()
+    public void Rotation()
     {
         var mesh = CreateMesh();
-        var transformationMatrix = Matrix4x4.CreateRotationX(MathF.PI / 2.0f); // 90
+        var transformationMatrix = Matrix4x4.CreateRotationX(MathF.PI / 2.0f);
         mesh.ApplyTransformation(transformationMatrix);
 
         List<Vector3> expectedVertexPositions = new(){
@@ -124,27 +124,64 @@ public class MeshTransformationTests
         }
     }
 
-    //[Fact]
-    //public void Rotation_02()
-    //{
-    //    var mesh = CreateMesh();
-    //    var rotationMatrixByX = Matrix4x4.CreateRotationX(5 * MathF.PI / 4.0f); // 225
-    //    var rotationMatrixByY = Matrix4x4.CreateRotationY(MathF.PI / 2.0f); // 90
+    [Fact]
+    public void Scaling_01()
+    {
+        var mesh = CreateMesh();
+        var transformationMatrix = Matrix4x4.CreateScale(1.0f);
+        mesh.ApplyTransformation(transformationMatrix);
 
-    //    var transformationMatrix = rotationMatrixByX * rotationMatrixByY;
+        List<Vector3> expectedVertexPositions = new(){
+        new Vector3(0.0f),
+        new Vector3(0.0f, 0.0f, 1.0f),
+        new Vector3(1.0f, 0.0f, 1.0f),
+        new Vector3(1.0f, 0.0f, 0.0f),
+        };
 
-    //    mesh.ApplyTransformation(transformationMatrix);
+        for (int i = 0; i < mesh.Vertices.Count; i++)
+        {
+            AssertAreEqual(expectedVertexPositions[i], mesh.Vertices[i]!.Position);
+        }
+    }
 
-    //    List<Vector3> expectedVertexPositions = new(){
-    //    new Vector3(0.0f),
-    //    new Vector3(0.0f, -1.0f, 0.0f),
-    //    new Vector3(-0.7f, 1.0f, 7.0f),
-    //    new Vector3(-0.7f, 0.0f, 7.0f),
-    //    }; 
 
-    //    for (int i = 0; i < mesh.Vertices.Count; i++)
-    //    {
-    //        AssertAreEqual(expectedVertexPositions[i], mesh.Vertices[i].Position);
-    //    }
-    //}
+    [Fact]
+    public void Scaling_02()
+    {
+        var mesh = CreateMesh();
+        var transformationMatrix = Matrix4x4.CreateScale(3.0f);
+        mesh.ApplyTransformation(transformationMatrix);
+
+        List<Vector3> expectedVertexPositions = new(){
+        new Vector3(0.0f),
+        new Vector3(0.0f, 0.0f, 3.0f),
+        new Vector3(3.0f, 0.0f, 3.0f),
+        new Vector3(3.0f, 0.0f, 0.0f),
+        };
+
+        for (int i = 0; i < mesh.Vertices.Count; i++)
+        {
+            AssertAreEqual(expectedVertexPositions[i], mesh.Vertices[i]!.Position);
+        }
+    }
+
+    [Fact]
+    public void Scaling_03()
+    {
+        var mesh = CreateMesh();
+        var transformationMatrix = Matrix4x4.CreateScale(new Vector3(3.0f, 2.0f, 1.0f));
+        mesh.ApplyTransformation(transformationMatrix);
+
+        List<Vector3> expectedVertexPositions = new(){
+        new Vector3(0.0f),
+        new Vector3(0.0f, 0.0f, 1.0f),
+        new Vector3(3.0f, 0.0f, 1.0f),
+        new Vector3(3.0f, 0.0f, 0.0f),
+        };
+
+        for (int i = 0; i < mesh.Vertices.Count; i++)
+        {
+            AssertAreEqual(expectedVertexPositions[i], mesh.Vertices[i]!.Position);
+        }
+    }
 }
