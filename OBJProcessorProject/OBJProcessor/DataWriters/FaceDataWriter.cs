@@ -5,15 +5,31 @@ namespace OBJProcessor.DataWriters;
 
 public class FaceDataWriter : MeshDataWriter
 {
-    public FaceDataWriter(string faceTag) : base(faceTag) { }
+    public FaceDataWriter(string faceTag, DeletionSynchronization? deletionSynchronization = null)
+        : base(faceTag, deletionSynchronization) { }
 
-    private string WriteVertexData(VertexData vertexData) {
+    private int CalculateVertexIndex(int vertexIndex)
+    {
+        int newVertexIndex = vertexIndex < 0 ? vertexIndex : vertexIndex + 1;
+
+        if (_deletionSynchronization is not null && newVertexIndex > 0)
+        {
+            int subtrahendOnIndex = _deletionSynchronization.GetVertexSubtrahendOnIndex(vertexIndex);
+            if(newVertexIndex - subtrahendOnIndex >= 0)
+                newVertexIndex -= subtrahendOnIndex;
+        }
+
+        return newVertexIndex;
+    }
+
+    private string WriteVertexData(VertexData vertexData)
+    {
         string output = "";
         int vertexIndex = vertexData.VertexIndex;
         int? uvCoordIndex = vertexData.UVIndex;
         int? normalIndex = vertexData.NormalIndex;
 
-        output += (vertexIndex < 0 ? vertexIndex : vertexIndex + 1).ToString();
+        output += CalculateVertexIndex(vertexIndex).ToString();
 
         if (uvCoordIndex.HasValue || normalIndex.HasValue)
         {
@@ -47,8 +63,10 @@ public class FaceDataWriter : MeshDataWriter
     {
         foreach (var face in mesh.Faces)
         {
-            if(face is not null)
+            if (face is not null)
+            {
                 writer.WriteLine(Tag + WriteFace(face));
+            }
         }
     }
 }

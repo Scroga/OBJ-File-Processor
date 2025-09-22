@@ -11,9 +11,11 @@ namespace OBJProcessor.DataWriters;
 public abstract class MeshDataWriter
 {
     public string Tag { get; init; }
-    protected MeshDataWriter(string tag)
+    protected DeletionSynchronization? _deletionSynchronization { get; set; }
+    protected MeshDataWriter(string tag, DeletionSynchronization? deletionSynchronization = null)
     {
         Tag = tag;
+        _deletionSynchronization = deletionSynchronization;
     }
 
     public string ConvertFloatToString(float number) {
@@ -40,5 +42,6 @@ public abstract class MeshDataWriter
             $" {ConvertFloatToString(vector.X)}" +
             $" {ConvertFloatToString(vector.Y)}";
     }
+
     public abstract void WriteMeshData(TextWriter writer, MeshData mesh);
 }

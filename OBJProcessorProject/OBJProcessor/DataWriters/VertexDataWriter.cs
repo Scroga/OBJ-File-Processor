@@ -4,14 +4,22 @@ namespace OBJProcessor.DataWriters;
 
 public class VertexDataWriter : MeshDataWriter
 {
-    public VertexDataWriter(string vertexTeg) : base(vertexTeg) { }
+    public VertexDataWriter(string vertexTeg, DeletionSynchronization? deletionSynchronization = null)
+        : base(vertexTeg, deletionSynchronization) { }
 
     public override void WriteMeshData(TextWriter writer, MeshData mesh)
     {
-        foreach (var vertex in mesh.Vertices)
+        for (int i = 0; i < mesh.Vertices.Count; i++)
         {
-            if(vertex is not null)
-             writer.WriteLine(Tag + WriteVector(vertex!.Position));
+            if (mesh.Vertices[i] is not null)
+            {
+                writer.WriteLine(Tag + WriteVector(mesh.Vertices[i]!.Position));
+            }
+            else
+            {
+                _deletionSynchronization?.IncrementCurrectVertexSubtrahend();
+            }
+            _deletionSynchronization?.AddVertexSubtrahend();
         }
     }
 }
