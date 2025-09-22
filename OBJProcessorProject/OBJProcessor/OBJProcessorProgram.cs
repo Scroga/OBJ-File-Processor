@@ -4,7 +4,7 @@ using System.Numerics;
 using CommandLine;
 using OBJProcessor.DataBuilders;
 using OBJProcessor.DataWriters;
-using OBJProcessor.DataProcessors;
+using OBJProcessor.MeshOperations;
 
 namespace OBJProcessor;
 
@@ -31,7 +31,8 @@ class OBJProcessorProgram : IProgram
     public void LoadMeshData()
     {
         var fileReader = new OBJDataReader();
-        fileReader.SetBuilder(new VertexDataBuilder())
+        fileReader
+            .SetBuilder(new VertexDataBuilder())
             .SetBuilder(new UVDataBuilder())
             .SetBuilder(new NormalDataBuilder())
             .SetBuilder(new FaceDataBuilder());
@@ -46,10 +47,13 @@ class OBJProcessorProgram : IProgram
     {
         var fileWriter = new OBJDataWriter();
 
-        fileWriter.SetWriter(new VertexDataWriter(VertexDataBuilder.VERTEX_TAG))
+        var delSync = new DeletionSynchronization();
+
+        fileWriter
+            .SetWriter(new VertexDataWriter(VertexDataBuilder.VERTEX_TAG, delSync))
             .SetWriter(new UVDataWriter(UVDataBuilder.UV_TAG))
             .SetWriter(new NormalDataWriter(NormalDataBuilder.NORMAL_TAG))
-            .SetWriter(new FaceDataWriter(FaceDataBuilder.FACE_TAG));
+            .SetWriter(new FaceDataWriter(FaceDataBuilder.FACE_TAG, delSync));
 
         using (var fs = new FileStream(_parsedArgs.OutputFileName, FileMode.Create, FileAccess.Write))
         using (var writer = new StreamWriter(fs))
@@ -60,15 +64,16 @@ class OBJProcessorProgram : IProgram
 
     private void ProcessMeshData()
     {
-        _meshData!.RemoveFacesWithZeroArea();
-        _meshData!.RemoveIsolatedVertices();
-
         var translation = new Vector3(0.0f, 4.0f, 0.0f);
-        var scaling = new Vector3(3.0f);
+        var scaling = new Vector3(0.0f);
         var rotation = new Vector3(0.0f, 0.0f, 45.0f);
 
-        var transformer = new MeshDataTransformer(translation, scaling, rotation);
-        transformer.ProcessMeshData(_meshData!);
+        var transformation = MeshTransformation.CreateTransformationMatrix(rotation: rotation);
+
+        _meshData!.RemoveFacesWithZeroArea();
+        _meshData!.RemoveIsolatedVertices();
+       // _meshData!.ApplyTransformation(transformation);
+        _meshData!.Normalize();
     }
 
     private void PreviewOutputMesh()
