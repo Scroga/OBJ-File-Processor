@@ -5,7 +5,7 @@ namespace OBJProcessorTests;
 
 public class ThreadSafeListTests
 {
-    static void RunTest(int numberOfTasks, ThreadSafeList<int> list, Action<ThreadSafeList<int>> action)
+    static void RunTasks(int numberOfTasks, ThreadSafeList<int> list, Action<ThreadSafeList<int>> action)
     {
         var tasks = new Task[numberOfTasks];
 
@@ -55,13 +55,13 @@ public class ThreadSafeListTests
     }
 
     [Fact]
-    public void SimpleAddTest()
+    public void AddTest()
     {
         int numberOfTasks = 100;
         int numberOfIterations = 1000;
 
         var list = new ThreadSafeList<int>();
-        RunTest(numberOfTasks, list, (ThreadSafeList<int> list) =>
+        RunTasks(numberOfTasks, list, (ThreadSafeList<int> list) =>
         {
             for (int i = 0; i < numberOfIterations; i++)
             {
@@ -70,6 +70,51 @@ public class ThreadSafeListTests
         });
 
         Assert.Equal(numberOfTasks * numberOfIterations, list.Count);
+    }
+
+    [Fact]
+    public void RemoveAtTest()
+    {
+        int numberOfTasks = 1000;
+
+        var list = new ThreadSafeList<int>(Enumerable.Repeat(1, numberOfTasks).ToList());
+        RunTasks(numberOfTasks, list, (ThreadSafeList<int> list) =>
+        {
+            list.RemoveAt(0);
+        });
+
+        Assert.Empty(list);
+    }
+
+    [Fact]
+    public void InsertTest() {
+        int numberOfTasks = 100;
+        int numberOfIterations = 1000;
+
+        var list = new ThreadSafeList<int>();
+        RunTasks(numberOfTasks, list, (ThreadSafeList<int> list) =>
+        {
+            for (int i = 0; i < numberOfIterations; i++)
+            {
+                list.Insert(i, i + 1);
+            }
+        });
+
+        Assert.Equal(numberOfTasks * numberOfIterations, list.Count);
+    }
+
+    [Fact]
+    public void InsertTest_InvalidIndex_01()
+    {
+        var list = new ThreadSafeList<int>() { 1,2,3,4};
+        Assert.Throws<ArgumentOutOfRangeException>(() => list.Insert(-1, 0));
+    }
+
+    [Fact]
+    public void InsertTest_InvalidIndex_02()
+    {
+        var list = new ThreadSafeList<int> { 1,2,3,4};
+        Assert.Throws<ArgumentOutOfRangeException>(() => list.Insert(5, 0));
     }
 }
 public class ThreadSafeEnumeratorTests

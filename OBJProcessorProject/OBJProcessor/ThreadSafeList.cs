@@ -54,6 +54,11 @@ public class ThreadSafeList<T> : IList<T>
         _inner = new();
     }
 
+    public ThreadSafeList(List<T> list)
+    {
+        _inner = list;
+    }
+
     public int Count
     {
         get
@@ -204,6 +209,12 @@ public class ThreadSafeList<T> : IList<T>
         lock (_lock)
         {
             return _inner.Exists(match);
+        }
+    }
+
+    public List<T> ToList() {
+        lock (_lock) {
+            return _inner.ToList();
         }
     }
 }
