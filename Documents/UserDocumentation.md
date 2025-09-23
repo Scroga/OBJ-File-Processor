@@ -33,11 +33,12 @@ Since an `.obj` file represents a model as a list of vertices and faces (where e
 ## Data
 The directory `Data/Meshes` contains several 3D models for demonstration purposes. The model `DirtyPerson.obj` is specifically provided to test the topology cleanup operation.
 
-<img src="../Data/Images/Box.jpg" alt="Box" width="179.5">
-<img src="../Data/Images/Person.jpg" alt="Person" width="170">
-<img src="../Data/Images/Bunny.jpg" alt="Bunny" width="156">
-<img src="../Data/Images/Longboard.jpg" alt="Longboard" width="252.2">
-
+<div style="white-space: nowrap;">
+  <img src="../Data/Images/Box.jpg" alt="Box" width="179.5">
+  <img src="../Data/Images/Person.jpg" alt="Person" width="170">
+  <img src="../Data/Images/Bunny.jpg" alt="Bunny" width="156">
+  <img src="../Data/Images/Longboard.jpg" alt="Longboard" width="252.2">
+</div>
 ### Command line arguments
 
 **Required arguments**
