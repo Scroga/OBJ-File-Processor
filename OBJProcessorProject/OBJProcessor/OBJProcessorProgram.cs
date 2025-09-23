@@ -67,20 +67,21 @@ class OBJProcessorProgram : IProgram
 
     private void ProcessMeshData()
     {
-        var translation = new Vector3(0.0f, 4.0f, 0.0f);
-        var scaling = new Vector3(5.0f);
-        var rotation = new Vector3(0.0f, 0.0f, 45.0f);
+        var transformation = MeshTransformation.CreateTransformationMatrix(
+            translation: _parsedArgs.Translation,
+            scaling:     _parsedArgs.Scaling,
+            rotation:    _parsedArgs.Rotation);
 
-        var transformation = MeshTransformation.CreateTransformationMatrix(rotation: rotation);
-
-        _meshData!.RemoveFacesWithZeroArea();
-        _meshData!.RemoveIsolatedVertices();
+        _meshData!.RemoveFacesWithZeroArea().RemoveIsolatedVertices();
         _meshData!.ApplyTransformation(transformation);
-        //_meshData!.Normalize();
+        if (_parsedArgs.Normalize)
+            _meshData!.Normalize();
     }
 
     private void PreviewOutputMesh()
     {
+        if (_parsedArgs.BlenderExePath is null) return;
+
         string pythonScriptPath = Path.Combine(PROJECT_ROOT_DIR, PYTHON_SCRIPT);
         string blenderPath = _parsedArgs.BlenderExePath;
         string modelPath = _parsedArgs.OutputFileName;
