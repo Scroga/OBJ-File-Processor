@@ -39,6 +39,7 @@ The directory `Data/Meshes` contains several 3D models for demonstration purpose
   <img src="../Data/Images/Bunny.jpg" alt="Bunny" width="156">
   <img src="../Data/Images/Longboard.jpg" alt="Longboard" width="252.2">
 </div>
+
 ### Command line arguments
 
 **Required arguments**
