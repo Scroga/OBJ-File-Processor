@@ -30,6 +30,14 @@ The program supports mesh normalization. This operation scales the model to fit 
 The program supports topology cleanup. Specifically, it iterates through the mesh and removes all isolated vertices as well as any faces with zero area.  
 Since an `.obj` file represents a model as a list of vertices and faces (where each face is defined by a set of vertex indices), a synchronization mechanism is applied during removal to preserve the correct index relations within the output `.obj` file.
 
+## Data
+The directory `Data/Meshes` contains several 3D models for demonstration purposes. The model `DirtyPerson.obj` is specifically provided to test the topology cleanup operation.
+
+<img src="../Data/Images/Box.jpg" alt="Box" width="105.6">
+<img src="../Data/Images/Person.jpg" alt="Person" width="100">
+<img src="../Data/Images/Bunny.jpg" alt="Bunny" width="91.8">
+<img src="../Data/Images/Longboard.jpg" alt="Longboard" width="148.7">
+
 ### Command line arguments
 
 **Required arguments**
@@ -37,7 +45,7 @@ Since an `.obj` file represents a model as a list of vertices and faces (where e
 `-i/--input "path"` specifies path to the input `.obj` file. Example:
 
 ```
--i "C:\\.....\\OBJ-File-Processor\\Meshes\\Person.obj"
+-i "C:\\.....\\OBJ-File-Processor\\Data\\Meshes\\Person.obj"
 ```
 
 **Optional arguments**
