@@ -9,7 +9,6 @@ using OBJProcessor.DataWriters;
 using OBJProcessor.MeshOperations;
 
 namespace OBJProcessorTests;
-
 public class DeletionSynchronizatonTests
 {
     private MeshData CreateMeshData(string data)
