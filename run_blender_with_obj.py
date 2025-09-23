@@ -10,14 +10,11 @@ BLENDER_PATH = sys.argv[1]
 OBJ_FILE = sys.argv[2]
 
 if not os.path.isfile(BLENDER_PATH):
-    raise FileNotFoundError(f"Blender not found: {BLENDER_PATH}")
+    raise FileNotFoundError(f"Blender.exe file not found: {BLENDER_PATH}")
 if not os.path.isfile(OBJ_FILE):
-    raise FileNotFoundError(f"OBJ not found: {OBJ_FILE}")
+    raise FileNotFoundError(f"OBJ file not found: {OBJ_FILE}")
 
 IMPORT_SCRIPT = "import_obj.py"
-
-
-# why i cant directly write this 
 
 script = f"""
 import bpy

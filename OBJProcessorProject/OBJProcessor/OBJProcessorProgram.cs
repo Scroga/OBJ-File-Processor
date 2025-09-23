@@ -10,6 +10,9 @@ namespace OBJProcessor;
 
 class OBJProcessorProgram : IProgram
 {
+    private string PYTHON_SCRIPT = "run_blender_with_obj.py";
+    private string PROJECT_ROOT_DIR = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
+
     private OBJProcessorArgsParser _parsedArgs;
     private MeshData? _meshData;
 
@@ -65,28 +68,42 @@ class OBJProcessorProgram : IProgram
     private void ProcessMeshData()
     {
         var translation = new Vector3(0.0f, 4.0f, 0.0f);
-        var scaling = new Vector3(0.0f);
+        var scaling = new Vector3(5.0f);
         var rotation = new Vector3(0.0f, 0.0f, 45.0f);
 
         var transformation = MeshTransformation.CreateTransformationMatrix(rotation: rotation);
 
         _meshData!.RemoveFacesWithZeroArea();
         _meshData!.RemoveIsolatedVertices();
-       // _meshData!.ApplyTransformation(transformation);
-        _meshData!.Normalize();
+        _meshData!.ApplyTransformation(transformation);
+        //_meshData!.Normalize();
     }
 
     private void PreviewOutputMesh()
     {
-        //string pythonScript = "C:\\Users\\illy_\\Desktop\\Prog\\C#Project\\run_blender_with_obj.py";
-        //string blenderPath = "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe";
-        //string modelPath = "C:\\Users\\illy_\\Desktop\\Prog\\C#Project\\OBJProcessorProject\\OBJProcessor\\bin\\Debug\\net8.0\\OutputMesh.obj";
+        string pythonScriptPath = Path.Combine(PROJECT_ROOT_DIR, PYTHON_SCRIPT);
+        string blenderPath = _parsedArgs.BlenderExePath;
+        string modelPath = _parsedArgs.OutputFileName;
 
-        //string args = blenderPath + ' ' + modelPath;
+        string args = string.Format(" \"{0}\" \"{1}\" \"{2}\"", pythonScriptPath, blenderPath, modelPath);
 
-        //var pis = new ProcessStartInfo("python " + pythonScript, args);
-        //using var process = Process.Start(pis);
+        var psi = new ProcessStartInfo
+        {
+            FileName = "python",
+            Arguments = args,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true
+        };
+        using (Process? process = Process.Start(psi))
+        {
+            string? output = process?.StandardOutput.ReadToEnd();
+            string? errors = process?.StandardError.ReadToEnd();
+            process?.WaitForExit();
 
-        //process!.WaitForExit();
+            Console.WriteLine(output);
+            Console.WriteLine(errors);
+        }
     }
 }
