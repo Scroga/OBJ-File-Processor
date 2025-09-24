@@ -18,6 +18,28 @@ The program reads the `.obj` file using the `OBJDataReader` class and then store
 
 ### Program Components
 
+* **OBJProcessorProgram** class encapsulates `MeshData` and `OBJProcessorArgsParser` as fields and defines core functionality of the program, including `LoadMeshData`, `CreateOutputFile`, `ProcessMeshData` and `PreviewOutputMesh`. 
+
+* **MeshData** class is a container for storing geometric data parsed from `.obj` file. It encapsulates thread-safe collections of `MeshVertex`, `Face`, normal vectors a uv-coordinates.
+
+* **MeshVertex** class represents a vertex by encapsulating its position and the list of faces it is incident to.
+
+* **Face** class represents a face by encapsulating thread-safe collection of `VertexData`.
+
+* **VertexData** class stores iformation about a vertex, including its vertex index in the list of vertices maintained by `MeshData`, nullable normal index in the list of normal vector in `MeshData` and nullable uv-coordinate index in the list of uv-coordinates in `MeshData`.
+
+* **OBJDataReader** class maintains a list of data builders, which are responsible for reading, parseing and storing specific types of data to the `MeshData` object.
+
+* **DataBuilders** are objects responsible for parsing and storing data to the `MeshData` object. `OBJDataReader` reads a line from the file, and each data builder checks whether the line starts from the approptiete flag. If is does, the builder parses line, and store the data to the `MeshData` object.
+
+* **MeshOperations** are extention methods for `MeshData`, which apply operations by processing vertices and faces in parallel. 
+`MeshTransformation` class provides methods for generating transofrmation matrix and includes method for parallel multiplication of vertices positions by a transformation matrix.
+`TopologyCleanup` provides extention methods such as`RemoveIsolatedVertices` and `RemoveFacesWithZeroArea`. `RemoveIsolatedVertices` iterates through the vertices in parallel and removes vertices with no incident faces. `RemoveFacesWithZeroArea` iterates through faces in parallel, calculate their area, and removes faces with zero area.
+`MeshNormalizatio` computes a transofrmation matrix based on bounding box of the 3d model and applies it to each vertex, scaling and translating the model to fit within a unit cube.
+
+* **OBJDataWriter** class maintains a list of data writers, which are responsible for writing specific types of data to the output `.obj` file. Since an `.obj` file consists of a list of vertices, uv-coordinates , normals and faces, each vertex must have a specific position in the file becouse faces reference their indices. Consequently, removing vertices requires recalculating the vertex indices used in face specification. For this purpose,the `DeletionSynchronization` class is created. It is passed to the constructor of a data writer to recalculate the indices of the specific vertex referenced by face.
+
+
 
 ### Notes and Suggestions
 
