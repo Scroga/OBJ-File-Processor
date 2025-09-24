@@ -39,8 +39,18 @@ The program reads the `.obj` file using the `OBJDataReader` class and then store
 
 * **OBJDataWriter** class maintains a list of data writers, which are responsible for writing specific types of data to the output `.obj` file. Since an `.obj` file consists of a list of vertices, uv-coordinates , normals and faces, each vertex must have a specific position in the file becouse faces reference their indices. Consequently, removing vertices requires recalculating the vertex indices used in face specification. For this purpose,the `DeletionSynchronization` class is created. It is passed to the constructor of a data writer to recalculate the indices of the specific vertex referenced by face.
 
+* **DeletionSynchronization** class is shared between data writers to coordinate the deletion of specific vertices. Since vertex ordering is crucial, no data is physically removed from the `MeshData` object, instead, deleted vertices are set to null. The `DeletionSynchronization` maintains a list of integers corresponding to the vertices. When a vertex is set to null during program execution, it is not written to the ouput file, besides `DeletionSynchronization` object updates its list so that the `FaceDataWriter` can recalculate the indices of the vertices referenced in face definitions.
 
+### Unit Tests
+
+The program is tested where it is most meaningful. A large portion of the tests focus on the data readers and data writers. In contrast, operations such as normalization and transformation are tested manually by processing and previewing the 3D model, since it is difficult to predict the exact position of a specific vertex in 3D space after transformation.
+
+### Output Model Preview
+
+The project includes the *Python* script `run_blender_with_obj.py`, which is executed at the end of program to preview the output `.obj` file. The script opens *Blender*, cleans the default scene and imports the output 3d model. This functionality requires the path to the *Blender* `.exe` file to be provided as a command-line parameter, otherwise, the preview will not run.
 
 ### Notes and Suggestions
+
+The additional mesh operations were specified in the program [Specification](Specification.md). Those operations were not implemented due to the limited time avaible for the project and the overall complexity of the program, even without them. Nevertheless, the program is structured to remain compatible with future extensions, so new functionality can be added easily if needed.
 
 ### Conclusion
