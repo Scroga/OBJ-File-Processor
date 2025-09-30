@@ -54,3 +54,5 @@ The project includes the *Python* script `run_blender_with_obj.py`, which is exe
 The additional mesh operations were specified in the program [Specification](Specification.md). Those operations were not implemented due to the limited time avaible for the project and the overall complexity of the program, even without them. Nevertheless, the program is structured to remain compatible with future extensions, so new functionality can be added easily if needed.
 
 ### Conclusion
+
+This projet provides a strucutred and extensible approach for processing and optimizing 3D models in the `.obj` format. Core functionality such as reading, transforming, cleaning, and writing meshes is supported by automated tests, while complex operations are validated manually. Although some advanced operations were not implemented due to time constraints, the architecture is designed to accommodate future extensions with minimal effort.
